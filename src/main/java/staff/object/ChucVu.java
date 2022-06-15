@@ -8,7 +8,7 @@ public class ChucVu {
 	public int id;
 	public String ten = "";
 	public String ghiChu = "";
-	public int trang_thai;
+	public int trangThai;
 	
 	@Override
 	public String toString() {

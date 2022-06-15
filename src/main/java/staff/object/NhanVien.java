@@ -18,6 +18,10 @@ public class NhanVien {
 	public ChucVu chucVu;
 	public int idChucVu;
 	public int idPhongBan = 0;
+	public String cv = "";
+	public String luong = "";
+
+	public int loaiHopDong;
 	public String ghiChu = "";
 	public int trangThai;
 

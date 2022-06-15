@@ -81,7 +81,12 @@ public class TablePhongBan {
 			int kq = statement.executeUpdate();
 			Data.ghiLogRequest(TAG + "\tkq:" + kq);
 			if (kq > 0) {
-				idKQ = "chiNhanh.id";
+				String strSqlSelect = "SELECT MAX(ID) as id FROM " + TABLE_NAME;
+				Statement statement2 = connect.createStatement();
+				ResultSet rs = statement2.executeQuery(strSqlSelect);
+				while (rs.next()) {
+					idKQ = String.valueOf(rs.getInt(ID));
+				}
 			} else {
 				Data.ghiLogRequest(TAG + "\tLoi========");
 			}
@@ -149,5 +154,28 @@ public class TablePhongBan {
 		} catch (Exception e) {
 		}
 		return idKQ;
+	}
+
+	public static int count() {
+		String TAG = "Table" + TABLE_NAME + "-count";
+		int ketQua =0;
+		try {
+			String strSqlSelect = "SELECT COUNT('ID') as COUNT FROM " + TABLE_NAME;
+			strSqlSelect += " WHERE " + "(" + TRANG_THAI + " =  " + 1 + ");";
+			Data.ghiLogRequest(TAG + "\tselect:" + strSqlSelect);
+
+			Connection connect = DbUtil.getConnect(DbUtil.URL, DbUtil.USER, DbUtil.PASS);
+			Statement statement = connect.createStatement();
+
+			ResultSet rs = statement.executeQuery(strSqlSelect);
+			while (rs.next()) {
+				ketQua = rs.getInt("COUNT");
+			}
+			Data.ghiLogRequest(TAG + "\tkq:" + ketQua);
+
+		} catch (Exception e) {
+			Data.ghiLogRequest(TAG + "\tLoi========" + e.getMessage());
+		}
+		return ketQua;
 	}
 }

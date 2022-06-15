@@ -1,6 +1,5 @@
 package staff.table;
 
-import staff.object.ChiNhanh;
 import staff.object.ChucVu;
 import vn.vimass.csdl.utilDB.DbUtil;
 import vn.vimass.utils.Data;
@@ -41,6 +40,7 @@ public class TableChucVu {
 				chucVu.id = rs.getInt(ID);
 				chucVu.ten = rs.getString(TEN);
 				chucVu.ghiChu = rs.getString(GHI_CHU);
+				chucVu.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(chucVu);
 			}
 			Data.ghiLogRequest(TAG + "\tkq:" + ketQua);
@@ -58,10 +58,12 @@ public class TableChucVu {
 			String strSqlInsert = "INSERT INTO " + TABLE_NAME + ""
 										  + " ("
 										  + TEN + ", "
-										  + GHI_CHU
+										  + GHI_CHU +  ", "
+										  + TRANG_THAI
 										  + " ) VALUES ("
 										  + "N'" + chucVu.ten + "',"
-										  + "N'" + chucVu.ghiChu + "'"
+										  + "N'" + chucVu.ghiChu + "',"
+										  + chucVu.trangThai
 										  + ");";
 
 			Data.ghiLogRequest(TAG + "\tinsert:" + strSqlInsert);
@@ -71,7 +73,12 @@ public class TableChucVu {
 			int kq = statement.executeUpdate();
 			Data.ghiLogRequest(TAG + "\tkq:" + kq);
 			if (kq > 0) {
-				idKQ = "chiNhanh.id";
+				String strSqlSelect = "SELECT MAX(ID) as id FROM " + TABLE_NAME;
+				Statement statement2 = connect.createStatement();
+				ResultSet rs = statement2.executeQuery(strSqlSelect);
+				while (rs.next()) {
+					idKQ = String.valueOf(rs.getInt(ID));
+				}
 			} else {
 				Data.ghiLogRequest(TAG + "\tLoi========");
 			}
@@ -88,6 +95,7 @@ public class TableChucVu {
 		try {
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
 										  + GHI_CHU + " = N'" + chucVu.ghiChu + "', "
+										  + TRANG_THAI + " = " + chucVu.trangThai + ", "
 										  + TEN + " = N'" + chucVu.ten + "'";
 			strSqlUpdate += " WHERE "
 									+ ID + " = '" + chucVu.id + "'"

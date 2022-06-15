@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Ultis {
@@ -136,5 +138,39 @@ public class Ultis {
         }
         return "";
     }
+
+	public static long TimeConverterFrom(String time)
+	{
+		long result = 0;
+		try {
+			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+			Date d = f.parse(time);
+			d.setHours(0);
+			d.setMinutes(0);
+			d.setSeconds(0);
+			result = d.getTime();
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static long TimeConverterTo(String time)
+	{
+		long result = 0;
+		try {
+			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+			Date d = f.parse(time);
+			d.setHours(23);
+			d.setMinutes(59);
+			d.setSeconds(0);
+			result = d.getTime();
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 }

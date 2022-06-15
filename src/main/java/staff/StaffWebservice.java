@@ -34,10 +34,28 @@ public class StaffWebservice {
 	}
 
 	@GET
+	@Path("/tong-quan")
+	public String getTongQuan() {
+		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
+
+		return StaffFunc.getOverview();
+
+	}
+
+	@GET
+	@Path("/chenh-lech")
+	public String getChenhLech(@QueryParam("tuNgay") long tuNgay,
+							   @QueryParam("denNgay") long denNgay) {
+		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
+
+		return StaffFunc.getDifference(tuNgay, denNgay);
+
+	}
+	@GET
 	@Path("/nhan-vien")
 	public String getNhanVien(@QueryParam("id") int id,
-							  @QueryParam("id-chi-nhanh") int idChiNhanh,
-							  @QueryParam("id-phong-ban") int idPhongBan,
+							  @QueryParam("idChiNhanh") int idChiNhanh,
+							  @QueryParam("idPhongBan") int idPhongBan,
 							  @QueryParam("limit") int limit,
 							  @QueryParam("offset") int offset) {
 		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
@@ -55,7 +73,7 @@ public class StaffWebservice {
 	}
 
 	@POST
-	@Path("/nhan-vienh/cap-nhat")
+	@Path("/nhan-vien/cap-nhat")
 	public String updateNhanVien(String input) {
 		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
 
@@ -107,7 +125,7 @@ public class StaffWebservice {
 	@GET
 	@Path("/phong-ban")
 	public String getPhongBan(@QueryParam("id") int id,
-							  @QueryParam("id-chi-nhanh") int idChiNhanh,
+							  @QueryParam("idChiNhanh") int idChiNhanh,
 							  @QueryParam("limit") int limit,
 							  @QueryParam("offset") int offset) {
 		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
@@ -125,7 +143,7 @@ public class StaffWebservice {
 	}
 
 	@POST
-	@Path("/phong-ban/cap-nhap")
+	@Path("/phong-ban/cap-nhat")
 	public String updatePhongBan(String input) {
 		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
 
@@ -160,7 +178,7 @@ public class StaffWebservice {
 	}
 
 	@POST
-	@Path("/chuc-vu/cap-nhap")
+	@Path("/chuc-vu/cap-nhat")
 	public String updateChucVu(String input) {
 		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
 

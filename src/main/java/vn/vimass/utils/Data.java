@@ -31,7 +31,7 @@ public class Data {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("dd_MM_yyyy");
 
 		String giophutgiay = sdf.format(cal.getTime());
-		String tenFile = "HDDT_" + sdfDate.format(cal.getTime()) + ".txt";
+		String tenFile = "VimassStaff_" + sdfDate.format(cal.getTime()) + ".txt";
 		FileManager.writeFile(FOLDER_LOG + tenFile, giophutgiay + "\t"
 				+ sNoiDung + "\n", true);
 	}

@@ -8,14 +8,17 @@ import vn.vimass.csdl.object.ObjectMessageResult;
 import vn.vimass.utils.Data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class StaffFunc {
 
+	public static final String APILAYTHONGTIN = "ApiLayThongTin-";
+
 	public static String getAllNhanSu() {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
-		Data.ghiLogRequest("ApiLayThongTinNhanSu");
+		Data.ghiLogRequest(APILAYTHONGTIN + "NhanSu");
 		try {
 			ChiNhanhs nhanSu = new ChiNhanhs();
 			// Lấy all thông tin
@@ -34,8 +37,7 @@ public class StaffFunc {
 			HashMap<Integer, ArrayList<NhanVien>> mapIdPhongBan_NhanViens = new HashMap<>();
 			for (NhanVien nhanVien : nhanViens) {
 				ArrayList<NhanVien> nhanViens1 = new ArrayList<>();
-				nhanViens1 = mapIdPhongBan_NhanViens.containsKey(nhanVien.idPhongBan)
-									 ? mapIdPhongBan_NhanViens.get(nhanVien.idPhongBan) : nhanViens1;
+				nhanViens1 = mapIdPhongBan_NhanViens.containsKey(nhanVien.idPhongBan) ? mapIdPhongBan_NhanViens.get(nhanVien.idPhongBan) : nhanViens1;
 				nhanViens1.add(nhanVien);
 				mapIdPhongBan_NhanViens.put(nhanVien.idPhongBan, nhanViens1);
 			}
@@ -48,8 +50,7 @@ public class StaffFunc {
 			HashMap<Integer, ArrayList<PhongBan>> mapIdChiNhanh_PhongBans = new HashMap<>();
 			for (PhongBan phongBan : phongBans) {
 				ArrayList<PhongBan> phongBans1 = new ArrayList<>();
-				phongBans1 = mapIdChiNhanh_PhongBans.containsKey(phongBan.idChiNhanh)
-									 ? mapIdChiNhanh_PhongBans.get(phongBan.idChiNhanh) : phongBans1;
+				phongBans1 = mapIdChiNhanh_PhongBans.containsKey(phongBan.idChiNhanh) ? mapIdChiNhanh_PhongBans.get(phongBan.idChiNhanh) : phongBans1;
 				phongBans1.add(phongBan);
 				mapIdChiNhanh_PhongBans.put(phongBan.idChiNhanh, phongBans1);
 			}
@@ -58,13 +59,11 @@ public class StaffFunc {
 			for (ChiNhanh chiNhanh : chiNhanhs) {
 				if (chiNhanh.trangThai == 1) {
 					ArrayList<PhongBan> phongBans1 = new ArrayList<>();
-					phongBans1 = mapIdChiNhanh_PhongBans.containsKey(chiNhanh.id)
-										 ? mapIdChiNhanh_PhongBans.get(chiNhanh.id) : phongBans1;
+					phongBans1 = mapIdChiNhanh_PhongBans.containsKey(chiNhanh.id) ? mapIdChiNhanh_PhongBans.get(chiNhanh.id) : phongBans1;
 					for (PhongBan phongBan1 : phongBans1) {
 						if (phongBan1.trangThai == 1) {
 							ArrayList<NhanVien> nhanViens1 = new ArrayList<>();
-							nhanViens1 = mapIdPhongBan_NhanViens.containsKey(phongBan1.id)
-												 ? mapIdPhongBan_NhanViens.get(phongBan1.id) : nhanViens1;
+							nhanViens1 = mapIdPhongBan_NhanViens.containsKey(phongBan1.id) ? mapIdPhongBan_NhanViens.get(phongBan1.id) : nhanViens1;
 							for (NhanVien nhanVien : nhanViens1) {
 								if (nhanVien.trangThai == 1) {
 									nhanVien.chucVu = chucVusMap.get(nhanVien.idChucVu);
@@ -79,12 +78,80 @@ public class StaffFunc {
 			}
 
 			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, nhanSu);
-			Data.ghiLogRequest("ApiLayThongTinNhanSu: " + new Gson().toJson(nhanSu));
+			Data.ghiLogRequest(APILAYTHONGTIN + "NhanSu: " + new Gson().toJson(nhanSu));
 
 			return new Gson().toJson(ketQua);
 		} catch (Exception e) {
 			ketQua.setResult(e.getMessage());
-			Data.ghiLogRequest("ApiLayThongTinNhanSu: Exception " + e.getMessage());
+			Data.ghiLogRequest(APILAYTHONGTIN + "NhanSu: Exception " + e.getMessage());
+		}
+		return new Gson().toJson(ketQua);
+	}
+
+	public static String getOverview() {
+		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
+
+		Data.ghiLogRequest(APILAYTHONGTIN + "TongQuan");
+		try {
+			int countChiNhanh = TableChiNhanh.count();
+			int countPhongBan = TablePhongBan.count();
+			int countNhanVien = TableNhanVien.count();
+
+			TongQuan tongQuan = new TongQuan(countChiNhanh, countPhongBan, countNhanVien);
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, tongQuan);
+			Data.ghiLogRequest(APILAYTHONGTIN + "TongQuan: " + new Gson().toJson(tongQuan));
+		} catch (Exception e) {
+			ketQua.setResult(e.getMessage());
+			Data.ghiLogRequest(APILAYTHONGTIN + "TongQuan: Exception " + e.getMessage());
+		}
+		return new Gson().toJson(ketQua);
+	}
+
+	public static String getDifference(long fromDate, long toDate) {
+		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
+
+		Data.ghiLogRequest(APILAYTHONGTIN + "ChenhLech");
+		try {
+			Date dayNow = new Date();
+			Date ngayDauThang = new Date(dayNow.getYear(), dayNow.getMonth(), 1);
+			if (fromDate == 0) fromDate = ngayDauThang.getTime();
+			else {
+				Date temp = new Date(fromDate);
+				temp = new Date(temp.getYear(), temp.getMonth(), temp.getDate());
+				fromDate = temp.getTime();
+			}
+			if (toDate == 0) toDate = dayNow.getTime();
+			Date temp = new Date(toDate);
+			temp = new Date(temp.getYear(), temp.getMonth(), temp.getDate(), 23, 59, 00);
+			toDate = temp.getTime();
+
+			int soNhanVienNghiViec = 0, soNhanVienMoiVao = 0, soLuongNhanVienThayDoi;
+			ArrayList<NhanVien> nhanVienNghiViecs = new ArrayList<>();
+			ArrayList<NhanVien> nhanVienMoiVaos = new ArrayList<>();
+
+			ArrayList<NhanVien> nhanViens = TableNhanVien.getAll();
+			for (NhanVien nhanVien : nhanViens) {
+				if (nhanVien.thoiGianKetThucLamViec != 0
+							&& fromDate <= nhanVien.thoiGianKetThucLamViec
+							&& nhanVien.thoiGianKetThucLamViec <= toDate) {
+					nhanVienNghiViecs.add(nhanVien);
+					soNhanVienNghiViec++;
+				}
+				if (nhanVien.thoiGianBatDauLamViec != 0
+							&& fromDate <= nhanVien.thoiGianBatDauLamViec
+							&& nhanVien.thoiGianBatDauLamViec <= toDate) {
+					nhanVienMoiVaos.add(nhanVien);
+					soNhanVienMoiVao++;
+				}
+			}
+			soLuongNhanVienThayDoi = soNhanVienMoiVao - soNhanVienNghiViec;
+			ChenhLech chenhLech = new ChenhLech(fromDate, toDate, soNhanVienNghiViec, soNhanVienMoiVao,
+					soLuongNhanVienThayDoi, nhanVienNghiViecs, nhanVienMoiVaos);
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, chenhLech);
+			Data.ghiLogRequest(APILAYTHONGTIN + "ChenhLech: " + new Gson().toJson(chenhLech));
+		} catch (Exception e) {
+			ketQua.setResult(e.getMessage());
+			Data.ghiLogRequest(APILAYTHONGTIN + "ChenhLech: Exception " + e.getMessage());
 		}
 		return new Gson().toJson(ketQua);
 	}
@@ -92,15 +159,15 @@ public class StaffFunc {
 	public static String getNhanVien(int id, int idChiNhanh, int idPhongBan, int limit, int offset) {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
-		Data.ghiLogRequest("ApiLayThongTinNhanVien");
+		Data.ghiLogRequest(APILAYTHONGTIN + "NhanVien");
 		try {
 			ArrayList<NhanVien> nhanViens = TableNhanVien.get(id, idChiNhanh, idPhongBan, limit, offset);
-			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS,
-					new NhanViens(nhanViens));
-			Data.ghiLogRequest("ApiLayThongTinNhanVien: " + new Gson().toJson(nhanViens));
+
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, new NhanViens(nhanViens));
+			Data.ghiLogRequest(APILAYTHONGTIN + "NhanVien: " + new Gson().toJson(nhanViens));
 		} catch (Exception e) {
 			ketQua.setResult(e.getMessage());
-			Data.ghiLogRequest("ApiLayThongTinNhanVien: Exception " + e.getMessage());
+			Data.ghiLogRequest(APILAYTHONGTIN + "NhanVien: Exception " + e.getMessage());
 		}
 		return new Gson().toJson(ketQua);
 	}
@@ -109,6 +176,10 @@ public class StaffFunc {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
 		NhanVien objInput = new Gson().fromJson(input, NhanVien.class);
+		if (objInput.ten.equals("") || objInput.ten == null) {
+			ketQua.setResult("Thiếu thông tin: ten");
+			return new Gson().toJson(ketQua);
+		}
 
 		Data.ghiLogRequest("ApiAddNhanVien");
 		try {
@@ -162,8 +233,7 @@ public class StaffFunc {
 		Data.ghiLogRequest("ApiGetChiNhanh");
 		try {
 			ArrayList<ChiNhanh> chiNhanhs = TableChiNhanh.get(id, limit, offset);
-			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS,
-					new ChiNhanhs(chiNhanhs));
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, new ChiNhanhs(chiNhanhs));
 			Data.ghiLogRequest("ApiGetChiNhanh: " + new Gson().toJson(chiNhanhs));
 		} catch (Exception e) {
 			ketQua.setResult(e.getMessage());
@@ -176,6 +246,10 @@ public class StaffFunc {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
 		ChiNhanh objInput = new Gson().fromJson(input, ChiNhanh.class);
+		if (objInput.ten.equals("") || objInput.ten == null) {
+			ketQua.setResult("Thiếu thông tin: ten");
+			return new Gson().toJson(ketQua);
+		}
 
 		Data.ghiLogRequest("ApiAddChiNhanh");
 		try {
@@ -222,14 +296,14 @@ public class StaffFunc {
 		}
 		return new Gson().toJson(ketQua);
 	}
+
 	public static String getPhongBan(int id, int idChiNhanh, int limit, int offset) {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
 		Data.ghiLogRequest("ApiGetPhongBan");
 		try {
 			ArrayList<PhongBan> phongBans = TablePhongBan.get(id, idChiNhanh, limit, offset);
-			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS,
-					new PhongBans(phongBans));
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, new PhongBans(phongBans));
 			Data.ghiLogRequest("ApiGetPhongBan: " + new Gson().toJson(phongBans));
 		} catch (Exception e) {
 			ketQua.setResult(e.getMessage());
@@ -242,6 +316,10 @@ public class StaffFunc {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
 		PhongBan objInput = new Gson().fromJson(input, PhongBan.class);
+		if (objInput.ten.equals("") || objInput.ten == null) {
+			ketQua.setResult("Thiếu thông tin: ten");
+			return new Gson().toJson(ketQua);
+		}
 
 		Data.ghiLogRequest("ApiAddPhongBan");
 		try {
@@ -295,8 +373,7 @@ public class StaffFunc {
 		Data.ghiLogRequest("ApiGetChucVu");
 		try {
 			ArrayList<ChucVu> chucVus = TableChucVu.get(id, limit, offset);
-			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS,
-					new ChucVus(chucVus));
+			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, new ChucVus(chucVus));
 			Data.ghiLogRequest("ApiGetChucVu: " + new Gson().toJson(chucVus));
 		} catch (Exception e) {
 			ketQua.setResult(e.getMessage());
@@ -309,6 +386,10 @@ public class StaffFunc {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 
 		ChucVu objInput = new Gson().fromJson(input, ChucVu.class);
+		if (objInput.ten.equals("") || objInput.ten == null) {
+			ketQua.setResult("Thiếu thông tin: ten");
+			return new Gson().toJson(ketQua);
+		}
 
 		Data.ghiLogRequest("ApiAddChucVu");
 		try {
