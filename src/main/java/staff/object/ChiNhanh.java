@@ -14,16 +14,23 @@ public class ChiNhanh {
 	public String img = "";
 	public String mst = "";
 	public String ghiChu = "";
+	public double lat;
+	public double lng;
+	public double radius;
+	public long createdAt;
+	public long updateAt;
+	public String modifiedBy = "";
 	public int trangThai;
 
+
 	public ArrayList<PhongBan> phongBans = new ArrayList<>();
-	
+
 	@Override
 	public String toString() {
 		Gson gson = new GsonBuilder()
-			    .disableHtmlEscaping()
-			    .create();
-				return gson.toJson(this);
+							.disableHtmlEscaping()
+							.create();
+		return gson.toJson(this);
 	}
 
 }

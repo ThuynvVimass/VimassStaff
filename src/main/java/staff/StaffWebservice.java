@@ -123,6 +123,14 @@ public class StaffWebservice {
 	}
 
 	@GET
+	@Path("/chi-nhanh/cua-nhan-vien")
+	public String getChiNhanhBySdtNhanVien(@QueryParam("idNhanVien") String sdtNhanVien) {
+		Data.ghiLogRequest("IP:" + request.getRemoteAddr());
+
+		return StaffFunc.getChiNhanhBySdtNhanVien(sdtNhanVien);
+	}
+
+	@GET
 	@Path("/phong-ban")
 	public String getPhongBan(@QueryParam("id") int id,
 							  @QueryParam("idChiNhanh") int idChiNhanh,

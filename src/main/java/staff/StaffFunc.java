@@ -242,6 +242,25 @@ public class StaffFunc {
 		return new Gson().toJson(ketQua);
 	}
 
+	public static String getChiNhanhBySdtNhanVien(String sdtNhanVien) {
+		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
+
+		Data.ghiLogRequest("ApiGetChiNhanhBySdtNhanVien");
+		try {
+			ChiNhanh chiNhanh = TableChiNhanh.get(sdtNhanVien);
+			if (chiNhanh != null) {
+				ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, chiNhanh);
+				Data.ghiLogRequest("ApiGetChiNhanhBySdtNhanVien: " + new Gson().toJson(chiNhanh));
+			} else {
+				ketQua.setResult("Không tìm thấy thông tin chi nhánh từ sđt này");
+			}
+		} catch (Exception e) {
+			ketQua.setResult(e.getMessage());
+			Data.ghiLogRequest("ApiGetChiNhanhBySdtNhanVien: Exception " + e.getMessage());
+		}
+		return new Gson().toJson(ketQua);
+	}
+
 	public static String addChiNhanh(String input) {
 		ObjectMessageResult ketQua = new ObjectMessageResult(ErrorCode.FALSE, ErrorCode.MES_FALSE);
 

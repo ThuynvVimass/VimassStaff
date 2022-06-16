@@ -7,6 +7,9 @@ public class ChucVu {
 
 	public int id;
 	public String ten = "";
+	public long createdAt;
+	public long updateAt;
+	public String modifiedBy = "";
 	public String ghiChu = "";
 	public int trangThai;
 	

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TableChiNhanh {
 
@@ -20,6 +21,13 @@ public class TableChiNhanh {
 	public static final String IMG = "img";
 	public static final String MST = "mst";
 	public static final String GHI_CHU = "ghi_chu";
+	public static final String LAT = "lat";
+	public static final String LNG = "lng";
+	public static final String RADIUS = "radius";
+	public static final String CREATED_AT = "created_at";
+	public static final String UPDATE_AT = "update_at";
+	public static final String MODIFIED_BY = "modified_by";
+
 	public static final String TRANG_THAI = "trang_thai";
 
 	public static ArrayList<ChiNhanh> get(int idInput) {
@@ -49,8 +57,52 @@ public class TableChiNhanh {
 				chiNhanh.img = rs.getString(IMG);
 				chiNhanh.mst = rs.getString(MST);
 				chiNhanh.ghiChu = rs.getString(GHI_CHU);
+				chiNhanh.lat = rs.getDouble(LAT);
+				chiNhanh.lng = rs.getDouble(LNG);
+				chiNhanh.radius = rs.getDouble(RADIUS);
 				chiNhanh.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(chiNhanh);
+			}
+			Data.ghiLogRequest(TAG + "\tkq:" + ketQua);
+
+		} catch (Exception e) {
+			Data.ghiLogRequest(TAG + "\tLoi========" + e.getMessage());
+		}
+		return ketQua;
+	}
+
+	public static ChiNhanh get(String sdtNhanVien) {
+		String TAG = "TableChiNhanh-lay";
+		ChiNhanh ketQua = new ChiNhanh();
+		try {
+			if (sdtNhanVien == null || sdtNhanVien.equals("") ) return null;
+			String strSqlSelect = "SELECT * FROM " + TABLE_NAME + " cn join ";
+			strSqlSelect += "(SELECT pb.id as id_phong_ban, id_chi_nhanh FROM phong_ban pb join nhan_vien nv ";
+			strSqlSelect += "on pb.id = nv.id_phong_ban ";
+			strSqlSelect += "WHERE nv.sdt = " + sdtNhanVien + " ";
+			strSqlSelect += "LIMIT  1) temp ";
+			strSqlSelect += "on cn.id = temp.id_chi_nhanh;";
+
+			Data.ghiLogRequest(TAG + "\tselect:" + strSqlSelect);
+
+			Connection connect = DbUtil.getConnect(DbUtil.URL, DbUtil.USER, DbUtil.PASS);
+			Statement statement = connect.createStatement();
+
+			ResultSet rs = statement.executeQuery(strSqlSelect);
+			while (rs.next()) {
+				ChiNhanh chiNhanh = new ChiNhanh();
+				chiNhanh.id = rs.getInt(ID);
+				chiNhanh.ten = rs.getString(TEN);
+				chiNhanh.sdt = rs.getString(SDT);
+				chiNhanh.diaChi = rs.getString(DIA_CHI);
+				chiNhanh.img = rs.getString(IMG);
+				chiNhanh.mst = rs.getString(MST);
+				chiNhanh.ghiChu = rs.getString(GHI_CHU);
+				chiNhanh.lat = rs.getDouble(LAT);
+				chiNhanh.lng = rs.getDouble(LNG);
+				chiNhanh.radius = rs.getDouble(RADIUS);
+				chiNhanh.trangThai = rs.getInt(TRANG_THAI);
+				ketQua = chiNhanh;
 			}
 			Data.ghiLogRequest(TAG + "\tkq:" + ketQua);
 
@@ -64,6 +116,7 @@ public class TableChiNhanh {
 		String TAG = "TableChiNhanh-add";
 		String idKQ = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlInsert = "INSERT INTO " + TABLE_NAME + ""
 										  + " ("
 										  + TEN + ", "
@@ -72,6 +125,11 @@ public class TableChiNhanh {
 										  + IMG + ", "
 										  + MST + ", "
 										  + GHI_CHU + ", "
+										  + LAT + ", "
+										  + LNG + ", "
+										  + RADIUS + ", "
+										  + CREATED_AT + ", "
+										  + MODIFIED_BY + ", "
 										  + TRANG_THAI
 										  + " ) VALUES ("
 										  + "N'" + chiNhanh.ten + "',"
@@ -79,6 +137,11 @@ public class TableChiNhanh {
 										  + "N'" + chiNhanh.diaChi + "',"
 										  + "N'" + chiNhanh.img + "',"
 										  + "N'" + chiNhanh.mst + "',"
+										  + chiNhanh.lat + ","
+										  + chiNhanh.lng + ","
+										  + chiNhanh.radius + ","
+										  + dayNow.getTime() + ","
+										  + "N'" + chiNhanh.modifiedBy + "',"
 										  + "N'" + chiNhanh.ghiChu + "',"
 										  + chiNhanh.trangThai
 										  + ");";
@@ -110,12 +173,18 @@ public class TableChiNhanh {
 		String idKQ = "";
 		String checkSum1 = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
 										  + TEN + " = N'" + chiNhanh.ten + "', "
 										  + SDT + " = N'" + chiNhanh.sdt + "', "
 										  + DIA_CHI + " = N'" + chiNhanh.diaChi + "', "
 										  + IMG + " = N'" + chiNhanh.img + "', "
 										  + MST + " = N'" + chiNhanh.mst + "', "
+										  + LAT + " = " + chiNhanh.lat + ", "
+										  + LNG + " = " + chiNhanh.lng + ", "
+										  + RADIUS + " = " + chiNhanh.radius + ", "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + chiNhanh.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + chiNhanh.ghiChu + "', "
 										  + TRANG_THAI + " = " + chiNhanh.trangThai;
 			strSqlUpdate += " WHERE "
@@ -144,7 +213,10 @@ public class TableChiNhanh {
 		String idKQ = "";
 		String checkSum1 = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + chiNhanh.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + chiNhanh.ghiChu + "', "
 										  + TRANG_THAI + " = -2 ";
 			strSqlUpdate += " WHERE "

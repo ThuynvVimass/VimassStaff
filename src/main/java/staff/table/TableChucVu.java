@@ -9,12 +9,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TableChucVu {
 
 	public static final String TABLE_NAME = "chuc_vu";
 	public static final String ID = "id";
 	public static final String TEN = "ten";
+	public static final String CREATED_AT = "created_at";
+	public static final String UPDATE_AT = "update_at";
+	public static final String MODIFIED_BY = "modified_by";
 	public static final String GHI_CHU = "ghi_chu";
 	public static final String TRANG_THAI = "trang_thai";
 
@@ -55,13 +59,18 @@ public class TableChucVu {
 		String TAG = "TableChucVu-add";
 		String idKQ = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlInsert = "INSERT INTO " + TABLE_NAME + ""
 										  + " ("
 										  + TEN + ", "
+										  + CREATED_AT + ", "
+										  + MODIFIED_BY + ", "
 										  + GHI_CHU +  ", "
 										  + TRANG_THAI
 										  + " ) VALUES ("
 										  + "N'" + chucVu.ten + "',"
+										  + dayNow.getTime() + ","
+										  + "N'" + chucVu.modifiedBy + "',"
 										  + "N'" + chucVu.ghiChu + "',"
 										  + chucVu.trangThai
 										  + ");";
@@ -93,7 +102,10 @@ public class TableChucVu {
 		String idKQ = "";
 		String checkSum1 = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + chucVu.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + chucVu.ghiChu + "', "
 										  + TRANG_THAI + " = " + chucVu.trangThai + ", "
 										  + TEN + " = N'" + chucVu.ten + "'";
@@ -123,7 +135,10 @@ public class TableChucVu {
 		String idKQ = "";
 		String checkSum1 = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + chucVu.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + chucVu.ghiChu + "', "
 										  + TRANG_THAI + " = -2 ";
 			strSqlUpdate += " WHERE "

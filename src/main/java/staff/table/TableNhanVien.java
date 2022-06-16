@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TableNhanVien {
 
@@ -27,6 +28,9 @@ public class TableNhanVien {
 	public static final String CV = "cv";
 	public static final String LUONG = "luong";
 	public static final String LOAI_HOP_DONG = "loai_hop_dong";
+	public static final String CREATED_AT = "created_at";
+	public static final String UPDATE_AT = "update_at";
+	public static final String MODIFIED_BY = "modified_by";
 	public static final String GHI_CHU = "ghi_chu";
 	public static final String TRANG_THAI = "trang_thai";
 
@@ -123,6 +127,7 @@ public class TableNhanVien {
 		String TAG = "TableChiNhanh-addDuLieu-getAll";
 		String idKQ = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlInsert = "INSERT INTO " + TABLE_NAME + ""
 										  + " ("
 										  + TEN + ", "
@@ -138,6 +143,8 @@ public class TableNhanVien {
 										  + CV + ", "
 										  + LUONG + ", "
 										  + LOAI_HOP_DONG + ", "
+										  + CREATED_AT + ", "
+										  + MODIFIED_BY + ", "
 										  + GHI_CHU + ", "
 										  + TRANG_THAI
 										  + " ) VALUES ("
@@ -154,6 +161,8 @@ public class TableNhanVien {
 										  + "N'" + nhanVien.cv + "',"
 										  + "N'" + nhanVien.luong + "',"
 										  + nhanVien.loaiHopDong + ","
+										  + dayNow.getTime() + ","
+										  + "N'" + nhanVien.modifiedBy + "',"
 										  + "N'" + nhanVien.ghiChu + "',"
 										  + nhanVien.trangThai
 										  + ");";
@@ -184,6 +193,7 @@ public class TableNhanVien {
 		String TAG = "TableChiNhanh-update";
 		String idKQ = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
 										  + TEN + " = N'" + nhanVien.ten + "', "
 										  + SDT + " = N'" + nhanVien.sdt + "', "
@@ -198,6 +208,8 @@ public class TableNhanVien {
 										  + CV + " = N'" + nhanVien.cv + "', "
 										  + LUONG + " = N'" + nhanVien.luong + "', "
 										  + LOAI_HOP_DONG + " = " + nhanVien.loaiHopDong + ", "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + nhanVien.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + nhanVien.ghiChu + "', "
 										  + TRANG_THAI + " = " + nhanVien.trangThai;
 			strSqlUpdate += " WHERE "
@@ -225,7 +237,10 @@ public class TableNhanVien {
 		String TAG = "Table" + TABLE_NAME + "-delete";
 		String idKQ = "";
 		try {
+			Date dayNow = new Date();
 			String strSqlUpdate = "UPDATE " + TABLE_NAME + " SET "
+										  + UPDATE_AT + " = " + dayNow.getTime() + ", "
+										  + MODIFIED_BY + " = N'" + nhanVien.modifiedBy + "', "
 										  + GHI_CHU + " = N'" + nhanVien.ghiChu + "', "
 										  + TRANG_THAI + " = -2 ";
 			strSqlUpdate += " WHERE "

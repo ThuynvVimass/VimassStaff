@@ -10,6 +10,9 @@ public class PhongBan {
 	public int id;
 	public String ten = "";
 	public int idChiNhanh;
+	public long createdAt;
+	public long updateAt;
+	public String modifiedBy = "";
 	public String ghiChu = "";
 	public int trangThai;
 

@@ -22,6 +22,9 @@ public class NhanVien {
 	public String luong = "";
 
 	public int loaiHopDong;
+	public long createdAt;
+	public long updateAt;
+	public String modifiedBy = "";
 	public String ghiChu = "";
 	public int trangThai;
 
