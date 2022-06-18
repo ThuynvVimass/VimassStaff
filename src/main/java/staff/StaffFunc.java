@@ -184,6 +184,10 @@ public class StaffFunc {
 		Data.ghiLogRequest("ApiAddNhanVien");
 		try {
 			String kq = TableNhanVien.add(objInput);
+			if (kq.substring(0, 1).equals("L")) {
+				ketQua.setResult(kq);
+				return new Gson().toJson(ketQua);
+			}
 			ketQua = new ObjectMessageResult(ErrorCode.SUCCESS, ErrorCode.MES_SUCCESS, kq);
 			Data.ghiLogRequest("ApiAddNhanVien: " + new Gson().toJson(kq));
 		} catch (Exception e) {

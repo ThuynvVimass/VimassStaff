@@ -16,7 +16,7 @@ public class ChiNhanh {
 	public String ghiChu = "";
 	public double lat;
 	public double lng;
-	public double radius;
+	public int radius;
 	public long createdAt;
 	public long updateAt;
 	public String modifiedBy = "";

@@ -63,6 +63,9 @@ public class TableNhanVien {
 				nhanVien.luong = rs.getString(LUONG);
 				nhanVien.loaiHopDong = rs.getInt(LOAI_HOP_DONG);
 				nhanVien.ghiChu = rs.getString(GHI_CHU);
+				nhanVien.createdAt = rs.getLong(CREATED_AT);
+				nhanVien.updateAt = rs.getLong(UPDATE_AT);
+				nhanVien.modifiedBy = rs.getString(MODIFIED_BY);
 				nhanVien.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(nhanVien);
 			}
@@ -112,6 +115,52 @@ public class TableNhanVien {
 				nhanVien.luong = rs.getString(LUONG);
 				nhanVien.loaiHopDong = rs.getInt(LOAI_HOP_DONG);
 				nhanVien.ghiChu = rs.getString(GHI_CHU);
+				nhanVien.createdAt = rs.getLong(CREATED_AT);
+				nhanVien.updateAt = rs.getLong(UPDATE_AT);
+				nhanVien.modifiedBy = rs.getString(MODIFIED_BY);
+				nhanVien.trangThai = rs.getInt(TRANG_THAI);
+				ketQua.add(nhanVien);
+			}
+			Data.ghiLogRequest(TAG + "\tkq:" + ketQua);
+
+		} catch (Exception e) {
+			Data.ghiLogRequest(TAG + "\tLoi========" + e.getMessage());
+		}
+		return ketQua;
+	}
+
+	public static ArrayList<NhanVien> get(String sdt) {
+		String TAG = "TableNhanVien-lay";
+		ArrayList<NhanVien> ketQua = new ArrayList<>();
+		try {
+			String strSqlSelect = "SELECT * FROM " + TABLE_NAME + " nv";
+			strSqlSelect += " where (nv.sdt like '%" + sdt + "%');";
+			Data.ghiLogRequest(TAG + "\tselect:" + strSqlSelect);
+
+			Connection connect = DbUtil.getConnect(DbUtil.URL, DbUtil.USER, DbUtil.PASS);
+			Statement statement = connect.createStatement();
+
+			ResultSet rs = statement.executeQuery(strSqlSelect);
+			while (rs.next()) {
+				NhanVien nhanVien = new NhanVien();
+				nhanVien.id = rs.getInt(ID);
+				nhanVien.ten = rs.getString(TEN);
+				nhanVien.sdt = rs.getString(SDT);
+				nhanVien.email = rs.getString(EMAIL);
+				nhanVien.skype = rs.getString(SKYPE);
+				nhanVien.img = rs.getString(IMG);
+				nhanVien.hoSoNhanVien = rs.getString(HO_SO_NHAN_VIEN);
+				nhanVien.thoiGianBatDauLamViec = rs.getLong(THOI_GIAN_BAT_DAU_LAM_VIEC);
+				nhanVien.thoiGianKetThucLamViec = rs.getLong(THOI_GIAN_KET_THUC_LAM_VIEC);
+				nhanVien.idChucVu = rs.getInt(ID_CHUC_VU);
+				nhanVien.idPhongBan = rs.getInt(ID_PHONG_BAN);
+				nhanVien.cv = rs.getString(CV);
+				nhanVien.luong = rs.getString(LUONG);
+				nhanVien.loaiHopDong = rs.getInt(LOAI_HOP_DONG);
+				nhanVien.ghiChu = rs.getString(GHI_CHU);
+				nhanVien.createdAt = rs.getLong(CREATED_AT);
+				nhanVien.updateAt = rs.getLong(UPDATE_AT);
+				nhanVien.modifiedBy = rs.getString(MODIFIED_BY);
 				nhanVien.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(nhanVien);
 			}
@@ -127,6 +176,9 @@ public class TableNhanVien {
 		String TAG = "TableChiNhanh-addDuLieu-getAll";
 		String idKQ = "";
 		try {
+			ArrayList<NhanVien> listValidate = get(nhanVien.sdt);
+			if (get(nhanVien.sdt).size() > 0) return "Lỗi: Đã có nhân viên tạo từ số điện thoại này!";
+
 			Date dayNow = new Date();
 			String strSqlInsert = "INSERT INTO " + TABLE_NAME + ""
 										  + " ("

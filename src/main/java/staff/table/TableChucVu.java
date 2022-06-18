@@ -44,6 +44,9 @@ public class TableChucVu {
 				chucVu.id = rs.getInt(ID);
 				chucVu.ten = rs.getString(TEN);
 				chucVu.ghiChu = rs.getString(GHI_CHU);
+				chucVu.createdAt = rs.getLong(CREATED_AT);
+				chucVu.updateAt = rs.getLong(UPDATE_AT);
+				chucVu.modifiedBy = rs.getString(MODIFIED_BY);
 				chucVu.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(chucVu);
 			}

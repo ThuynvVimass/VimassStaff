@@ -50,6 +50,9 @@ public class TablePhongBan {
 				phongBan.ten = rs.getString(TEN);
 				phongBan.idChiNhanh = rs.getInt(ID_CHI_NHANH);
 				phongBan.ghiChu = rs.getString(GHI_CHU);
+				phongBan.createdAt = rs.getLong(CREATED_AT);
+				phongBan.updateAt = rs.getLong(UPDATE_AT);
+				phongBan.modifiedBy = rs.getString(MODIFIED_BY);
 				phongBan.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(phongBan);
 			}

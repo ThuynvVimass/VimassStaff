@@ -59,7 +59,10 @@ public class TableChiNhanh {
 				chiNhanh.ghiChu = rs.getString(GHI_CHU);
 				chiNhanh.lat = rs.getDouble(LAT);
 				chiNhanh.lng = rs.getDouble(LNG);
-				chiNhanh.radius = rs.getDouble(RADIUS);
+				chiNhanh.radius = rs.getInt(RADIUS);
+				chiNhanh.createdAt = rs.getLong(CREATED_AT);
+				chiNhanh.updateAt = rs.getLong(UPDATE_AT);
+				chiNhanh.modifiedBy = rs.getString(MODIFIED_BY);
 				chiNhanh.trangThai = rs.getInt(TRANG_THAI);
 				ketQua.add(chiNhanh);
 			}
@@ -73,15 +76,15 @@ public class TableChiNhanh {
 
 	public static ChiNhanh get(String sdtNhanVien) {
 		String TAG = "TableChiNhanh-lay";
-		ChiNhanh ketQua = new ChiNhanh();
+		ChiNhanh ketQua = null;
 		try {
 			if (sdtNhanVien == null || sdtNhanVien.equals("") ) return null;
-			String strSqlSelect = "SELECT * FROM " + TABLE_NAME + " cn join ";
-			strSqlSelect += "(SELECT pb.id as id_phong_ban, id_chi_nhanh FROM phong_ban pb join nhan_vien nv ";
-			strSqlSelect += "on pb.id = nv.id_phong_ban ";
-			strSqlSelect += "WHERE nv.sdt = " + sdtNhanVien + " ";
-			strSqlSelect += "LIMIT  1) temp ";
-			strSqlSelect += "on cn.id = temp.id_chi_nhanh;";
+			String strSqlSelect = "SELECT * FROM " + TABLE_NAME + " cn join";
+			strSqlSelect += " (SELECT pb.id as id_phong_ban, id_chi_nhanh FROM phong_ban pb join nhan_vien nv";
+			strSqlSelect += " on pb.id = nv.id_phong_ban";
+			strSqlSelect += " WHERE nv.sdt like '%" + sdtNhanVien + "%'";
+			strSqlSelect += " LIMIT  1) temp";
+			strSqlSelect += " on cn.id = temp.id_chi_nhanh;";
 
 			Data.ghiLogRequest(TAG + "\tselect:" + strSqlSelect);
 
@@ -100,7 +103,10 @@ public class TableChiNhanh {
 				chiNhanh.ghiChu = rs.getString(GHI_CHU);
 				chiNhanh.lat = rs.getDouble(LAT);
 				chiNhanh.lng = rs.getDouble(LNG);
-				chiNhanh.radius = rs.getDouble(RADIUS);
+				chiNhanh.radius = rs.getInt(RADIUS);
+				chiNhanh.createdAt = rs.getLong(CREATED_AT);
+				chiNhanh.updateAt = rs.getLong(UPDATE_AT);
+				chiNhanh.modifiedBy = rs.getString(MODIFIED_BY);
 				chiNhanh.trangThai = rs.getInt(TRANG_THAI);
 				ketQua = chiNhanh;
 			}
